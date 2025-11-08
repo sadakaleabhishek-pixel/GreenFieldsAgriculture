@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Categories - Green Fields Agriculture</title>
+  <style>
+       <style>
+        /* Base Styling */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            /* NOTE: Replace 'farm-bg.jpg' with your actual background image path */
+            background: url('farm-bg.jpg') no-repeat center/cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+      header, footer {
+ background: rgba(46,125,50,.95); 
+color:#fff;
+ padding:1rem; text-align:center; 
+position:relative; 
+}
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            align-items: center; /* Align items including the new button */
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            padding: 5px 10px;
+        }
+
+        /* Language Button Styling (New) */
+        #lang-toggle-btn {
+            background-color: #dcedc8; /* Light green-yellow for contrast */
+            color: #1b5e20;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            font-size: 0.9rem;
+        }
+        #lang-toggle-btn:hover {
+            background-color: #c8e6c9;
+        }
+        
+        /* Cart Icon */
+        #cart-icon {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            background: #1b5e20;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #cart-count {
+            background: red;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+            color: white;
+        }
+        
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #fff;
+            background: rgba(46, 125, 50, .85);
+            padding: 12px 25px;
+            border-radius: 10px;
+        }
+        
+        /* Category Grid */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .category-card, .subcategory-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, .12);
+            transition: .3s;
+            cursor: pointer;
+        }
+        .category-card:hover, .subcategory-card:hover {
+            transform: translateY(-8px) scale(1.05);
+        }
+        .category-card img, .subcategory-card img {
+            width: 110px;
+            height: 110px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+        
+        /* Subcategory View */
+        .subcategory-container {
+            display: none;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: #f1f8e9;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
+            width: 95%;
+            max-width: 1100px;
+        }
+        .subcategory-container.active {
+            display: block;
+        }
+        .subcategory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            justify-items: center;
+            align-items: center;
+        }
+        
+        /* Product Actions */
+        .back-btn {
+            background: #2e7d32;
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        .price {
+            font-weight: bold;
+            color: #2e7d32;
+            margin: 8px 0;
+            font-size: 1rem;
+        }
+        .buy-cart-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .buy-btn, .cart-btn {
+            background: #2e7d32;
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .buy-btn:hover, .cart-btn:hover {
+            background: #1b5e20;
+        }
+        
+        /* Cart Popup */
+        #cart-popup {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 360px;
+            height: 100%;
+            background: #fff;
+            box-shadow: -3px 0 10px rgba(0, 0, 0, .3);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: right 0.4s ease;
+        }
+        #cart-popup.active {
+            right: 0;
+        }
+        #cart-popup h2 {
+            text-align: center;
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .cart-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 5px;
+        }
+        .cart-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .qty-btn {
+            background: #2e7d32;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .remove-btn {
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .close-cart {
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+        .checkout-btn {
+            background: #2e7d32;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        /* Shared Overlay */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 999;
+        }
+        #overlay.active {
+            display: block;
+        }
+        
+        /* Toast Notification */
+        #toast-popup {
+            visibility: hidden;
+            position: fixed;
+            left: 50%;
+            top: 30px;
+            transform: translateX(-50%);
+            background-color: #1b5e20;
+            color: #fff;
+            padding: 16px 25px;
+            border-radius: 10px;
+            z-index: 2000;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.5s, visibility 0.5s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #toast-popup.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .toast-product-img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+            background-color: white;
+            border-radius: 5px;
+            padding: 2px;
+            flex-shrink: 0;
+        }
+        
+        /* --- Login Modal CSS --- */
+        #login-modal {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 3000; /* Above cart and overlay */
+            text-align: center;
+            width: 300px;
+            max-width: 90%;
+            border-top: 5px solid #d32f2f; /* Red border for emphasis */
+        }
+        #login-modal h3 {
+            color: #d32f2f;
+            margin-top: 0;
+        }
+        #login-modal button {
+            background: #2e7d32;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
+        #login-modal button:hover {
+            background: #1b5e20;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 900px) {
+            .subcategory-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .subcategory-grid {
+                grid-template-columns: 1fr;
+            }
+            #cart-popup {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="Home.html" data-key="nav_home">HOME</a></li>
+        <li><a href="Products.html" data-key="nav_products">PRODUCTS</a></li>
+        <li><a href="about.html" data-key="nav_about">ABOUT US</a></li>
+        <li><a href="contact.html" data-key="nav_contact">CONTACT US</a></li>
+        <li><button id="lang-toggle-btn" onclick="toggleLanguage()">मराठी</button></li>
+      </ul>
+    </nav>
+
+    <div id="cart-icon" onclick="toggleCart()" data-key="cart_icon">
+      🛒 Cart <span id="cart-count">0</span>
+    </div>
+
+    <div style="position:absolute; left:16px; top:12px; color:#fff; font-weight:700;">
+      <span id="user-greeting"></span>
+      <a id="logout-link" href="#" onclick="logout()" style="color:#fff; margin-left:10px; display:none;">(Logout)</a>
+    </div>
+  </header>
+
+  <main>
+    <h1 data-key="main_title">Product Categories</h1>
+    <div id="category-section" class="category-grid"></div>
+    <div id="subcategory-section"></div>
+  </main>
+
+  <div id="overlay"></div>
+
+  <div id="cart-popup">
+    <button class="close-cart" onclick="toggleCart()" data-key="cart_close">Close ✖</button>
+    <h2 data-key="cart_title">Your Cart</h2>
+    <div id="cart-items"></div>
+    <h3 data-key="cart_total_label">Total: ₹<span id="cart-total">0</span></h3>
+    <button class="checkout-btn" onclick="handleCheckout()" data-key="checkout_btn">Proceed to Checkout</button>
+    <p style="text-align:center; font-size:.85rem; color:#7f8c8d; margin-top:10px;" data-key="checkout_note">(Clicking checkout requires login)</p>
+  </div>
+
+  <footer><p data-key="footer_text">&copy; 2025 Green Fields Agriculture</p></footer>
+
+  <div id="toast-popup"></div>
+
+  <div id="login-modal">
+    <h3 data-key="login_modal_title">🔒 Login Required!</h3>
+    <p data-key="login_modal_message">You must be logged in to proceed with your purchase.</p>
+    <div style="margin-top:12px; display:flex; gap:8px; justify-content:center;">
+      <button onclick="confirmLoginRedirect()" data-key="login_modal_btn">Go to Login Page</button>
+      <button onclick="closeLoginModal()" style="background:#777;color:#fff;border:none;padding:8px 10px;border-radius:6px;">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    /***************
+     * Translations
+     ***************/
+    let currentLanguage = 'en';
+    const marathiTranslations = {
+      nav_home: 'मुख्यपृष्ठ', nav_products: 'उत्पादने', nav_about: 'आमच्याबद्दल', nav_contact: 'संपर्क',
+      cart_icon: '🛒 कार्ट', main_title: 'उत्पादन श्रेण्या',
+      insecticides: 'कीटकनाशके', nutrients: 'पोषक द्रव्ये', fungicides: 'बुरशीनाशके', seeds: 'बियाणे',
+      herbicides: 'तणनाशके', growth: 'वाढ प्रवर्धक', machinery: 'शेती यंत्रसामग्री', organic: 'सेंद्रिय शेती',
+      back_btn: '⬅ परत जा', buy_now_btn: 'आता खरेदी करा', add_to_cart_btn: '🛒 कार्टमध्ये जोडा',
+      cart_close: 'बंद करा ✖', cart_title: 'तुमचे कार्ट', cart_total_label: 'एकूण: ₹', checkout_btn: 'चेकआऊट करा',
+      checkout_note: '(चेकआऊट करण्यासाठी लॉगिन आवश्यक आहे)', alert_empty_cart: 'तुमचे कार्ट रिकामे आहे! पुढे जाण्यासाठी वस्तू जोडा。',
+      alert_add_to_cart: '✅ <strong>{name}</strong> कार्टमध्ये जोडले!', footer_text: '© २०२५ ग्रीन फील्ड्स ॲग्रिकल्चर',
+      login_modal_title: '🔒 लॉगिन आवश्यक!', login_modal_message: 'खरेदी पुढे सुरू ठेवण्यासाठी तुम्ही लॉग इन केलेले असणे आवश्यक आहे.', login_modal_btn: 'लॉगिन पृष्ठावर जा'
+    };
+
+    /***********************
+     * Categories & Products
+     * (FULL list you provided integrated here)
+     ***********************/
+    const categories = [
+        {
+            id: "insecticides",
+            name: "Insecticides",
+            img: "Insecticides.webp",
+            products: [
+                { name: "Coragen", price: 950, img: "F:/PROJECT/Coragen Insecticide.webp" },
+                { name: "Delegate", price: 650, img: "F:/PROJECT/Delegate Insecticide.webp" },
+                { name: "Exponus", price: 450, img: "F:/PROJECT/Exponus Insecticide.webp" },
+                { name: "Areva", price: 500, img: "F:/PROJECT/Areva Insecticide.webp" },
+                { name: "Exylon", price: 600, img: "F:/PROJECT/EXYLON EXYPROLE INSECTICIDE.webp" },
+                { name: "Phoskill", price: 500, img: "F:/PROJECT/Phoskill Insecticide.webp" }
+            ]
+        },
+        {
+            id: "nutrients",
+            name: "Nutrients",
+            img: "F:/PROJECT/Nutrients.webp",
+            products: [
+                { name: "Amino Acid & Vitamins", price: 500, img: "F:/PROJECT/Amino Acid & Vitamins.webp" },
+                { name: "Plant Amino Acid Bio Stimulant", price: 750, img: "F:/PROJECT/Plant Amino Acid Bio Stimulant.webp" },
+                { name: "GREENMORE-L Activator", price: 400, img: "F:/PROJECT/GREENMORE-L PLANT BIO ACTIVATOR.webp" },
+                { name: "PATIL BIOTECH – HUMOL", price: 650, img: "F:/PROJECT/PATIL BIOTECH – HUMOL.webp" },
+                { name: "GEOLIFE STRESS FREE", price: 550, img: "F:/PROJECT/GEOLIFE STRESS FREE.webp" },
+                { name: "TAREEF - Regulator", price: 700, img: "F:/PROJECT/TAREEF - PLANT GROWTH REGULATOR.webp" }
+            ]
+        },
+        {
+            id: "fungicides",
+            name: "Fungicides",
+            img: "F:/PROJECT/Fungicides.webp",
+            products: [
+                { name: "UPL Saaf", price: 800, img: "F:/PROJECT/UPL Saaf Fungicide – Carbendazim & Mancozeb WP Blend.webp" },
+                { name: "Indofil M-45", price: 900, img: "F:/PROJECT/Indofil M-45 Fungicide.webp" },
+                { name: "Kocide 2000", price: 650, img: "F:/PROJECT/DuPont Kocide Fungicide 2000.webp" },
+                { name: "Amistar Top", price: 500, img: "F:/PROJECT/Amistar Top Fungicide.webp" },
+                { name: "Antracol", price: 450, img: "F:/PROJECT/Antracol Fungicide.webp" },
+                { name: "Roko", price: 700, img: "F:/PROJECT/Roko Fungicide.webp" }
+            ]
+        },
+        {
+            id: "seeds",
+            name: "Seeds",
+            img: "F:/PROJECT/Vegetable & Fruit Seeds.webp",
+            products: [
+                { name: "Royal Bullet Chilli", price: 500, img: "F:/PROJECT/Royal Bullet Chilli Seeds.webp" },
+                { name: "CFL 1522 Cauliflower", price: 450, img: "F:/PROJECT/CFL 1522 Cauliflower Seeds.webp" },
+                { name: "Saaho TO-3251 Tomato", price: 800, img: "F:/PROJECT/Saaho TO-3251 Tomato Seeds.webp" },
+                { name: "Surabhi Coriander", price: 650, img: "F:/PROJECT/Surabhi Coriander Seeds.webp" },
+                { name: "GS-10 Pea", price: 550, img: "F:/PROJECT/GS- 10 Pea Seeds.webp" },
+                { name: "Red Lady Papaya", price: 700, img: "F:/PROJECT/Red Lady Papaya Seeds.avif" }
+            ]
+        },
+        {
+            id: "herbicides",
+            name: "Herbicides",
+            img: "F:/PROJECT/Herbicides.webp",
+            products: [
+                { name: "Saathi", price: 750, img: "F:/PROJECT/Saathi Herbicide.avif" },
+                { name: "Bayer Roundup", price: 600, img: "F:/PROJECT/Bayer Roundup Herbicide.avif" },
+                { name: "Topper 77", price: 500, img: "F:/PROJECT/Topper 77 Herbicide.avif" },
+                { name: "Glycel", price: 450, img: "F:/PROJECT/Glycel Herbicide.avif" },
+                { name: "Kabuto", price: 650, img: "F:/PROJECT/Kabuto Herbicide.avif" },
+                { name: "Laudis", price: 550, img: "F:/PROJECT/Laudis Herbicide.webp" }
+            ]
+        },
+        {
+            id: "growth",
+            name: "Growth Promoters",
+            img: "F:/PROJECT/Growth Promoters.webp",
+            products: [
+                { name: "Fantac Plus", price: 550, img: "F:/PROJECT/Fantac Plus Growth Promoter.webp" },
+                { name: "Felcon", price: 450, img: "F:/PROJECT/Felcon Growth Promoter.webp" },
+                { name: "Amruth Adaaar", price: 650, img: "F:/PROJECT/Amruth Adaaar Growth Promoter.webp" },
+                { name: "Vanproz Ahaar", price: 500, img: "F:/PROJECT/Vanproz Ahaar  Growth Promoter.webp" },
+                { name: "Banana Special", price: 800, img: "F:/PROJECT/Anand Agro Banana Special Promoter.webp" },
+                { name: "Root Fast", price: 700, img: "F:/PROJECT/Grow New Plants From Cuttings With Root Fast.webp" }
+            ]
+        },
+        {
+            id: "machinery",
+            name: "Farm Machinery",
+            img: "F:/PROJECT/Farm Machinery.webp",
+            products: [
+                { name: "Bharat 2-in-1 Weeder", price: 700, img: "F:/PROJECT/Bharat 2 In 1 Hand Weeder.webp" },
+                { name: "Brush Cutter", price: 900, img: "F:/PROJECT/Farmio Sudarshan Brush Cutter without Battery.webp" },
+                { name: "Bharat Goa Akadi", price: 500, img: "F:/PROJECT/Bharat Goa Akadi Wthiout Handle.webp" },
+                { name: "Mini Cultivator", price: 450, img: "F:/PROJECT/Neptune NC-52B 52CC Mini Cultivator.webp" },
+                { name: "Balwaan Water Pump", price: 650, img: "F:/PROJECT/BALWAAN WP 33R WATER PUMP 3X3 INCH.webp" },
+                { name: "Hose Pipe", price: 550, img: "F:/PROJECT/AUTOSTUDIO HOSE PIPE.webp" }
+            ]
+        },
+        {
+            id: "organic",
+            name: "Organic Farming",
+            img: "F:/PROJECT/Organic Farming.webp",
+            products: [
+                { name: "Biovita", price: 550, img: "F:/PROJECT/Biovita Liquid Biofertilizer.webp" },
+                { name: "Isabion", price: 650, img: "F:/PROJECT/Isabion Biostimulant by Syngenta's.webp" },
+                { name: "Katyayani Humic", price: 700, img: "F:/PROJECT/Katyayani Humic + Fulvic Acid Fertilizer 98%.webp" },
+                { name: "Samras", price: 450, img: "F:/PROJECT/Multiplex Samras Biostimulant.webp" },
+                { name: "Mahaphal", price: 850, img: "F:/PROJECT/Multiplex Mahaphal Bio Stimulant.webp" },
+                { name: "Nisarga", price: 700, img: "F:/PROJECT/Nisarga Bio Fungicide.webp" }
+            ]
+        }
+    ];
+
+    /***********************
+     * State & DOM refs
+     ***********************/
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]'); // persisted cart
+    const categorySection = document.getElementById('category-section');
+    const subcategorySection = document.getElementById('subcategory-section');
+    const cartCountEl = document.getElementById('cart-count');
+    const cartItemsEl = document.getElementById('cart-items');
+    const cartTotalEl = document.getElementById('cart-total');
+    const toastEl = document.getElementById('toast-popup');
+    const userGreeting = document.getElementById('user-greeting');
+    const logoutLink = document.getElementById('logout-link');
+
+    /***********************
+     * Utility functions
+     ***********************/
+    function isLoggedIn() {
+      return localStorage.getItem('isLoggedIn') === 'true' && localStorage.getItem('currentUser');
+    }
+
+    function showUserUI() {
+      const user = localStorage.getItem('currentUser');
+      if (user) {
+        userGreeting.textContent = `Hi, ${user}`;
+        logoutLink.style.display = 'inline';
+      } else {
+        userGreeting.textContent = '';
+        logoutLink.style.display = 'none';
+      }
+    }
+
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function showToast(html) {
+      toastEl.innerHTML = html;
+      toastEl.classList.add('show');
+      setTimeout(()=> toastEl.classList.remove('show'), 2000);
+    }
+
+    /***********************
+     * Language / translation
+     ***********************/
+    function translatePage(lang) {
+      const elements = document.querySelectorAll('[data-key]');
+      const isMr = lang === 'mr';
+      elements.forEach(el => {
+        const key = el.getAttribute('data-key');
+        const tr = marathiTranslations[key];
+        if (isMr && tr) {
+          if (!el.originalText) el.originalText = el.textContent;
+          el.textContent = tr;
+        } else if (!isMr && el.originalText) {
+          el.textContent = el.originalText;
+        }
+      });
+
+      // Translate dynamic category/subcategory titles
+      categories.forEach(cat => {
+        const catEl = document.querySelector(`.category-card p[data-key="${cat.id}"]`);
+        if (catEl) catEl.textContent = isMr ? (marathiTranslations[cat.id] || cat.name) : cat.name;
+
+        const sub = document.getElementById(cat.id);
+        if (sub) {
+          const h2 = sub.querySelector('h2');
+          if (h2) h2.textContent = isMr ? (marathiTranslations[cat.id] || cat.name) : cat.name;
+          const backBtn = sub.querySelector('.back-btn');
+          if (backBtn) backBtn.textContent = isMr ? marathiTranslations.back_btn : '⬅ Back';
+          sub.querySelectorAll('.buy-btn').forEach(b => b.textContent = isMr ? marathiTranslations.buy_now_btn : 'Buy Now');
+          sub.querySelectorAll('.cart-btn').forEach(b => b.textContent = isMr ? marathiTranslations.add_to_cart_btn : '🛒 Add to Cart');
+        }
+      });
+    }
+
+    function toggleLanguage(){
+      currentLanguage = currentLanguage === 'en' ? 'mr' : 'en';
+      document.getElementById('lang-toggle-btn').textContent = currentLanguage === 'en' ? 'मराठी' : 'English';
+      translatePage(currentLanguage);
+    }
+
+    /***********************
+     * Render categories & products
+     ***********************/
+    function buildUI() {
+      categorySection.innerHTML = '';
+      subcategorySection.innerHTML = '';
+
+      categories.forEach(cat => {
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        card.innerHTML = `<img src="${cat.img}" alt="${cat.name}"><p data-key="${cat.id}">${cat.name}</p>`;
+        card.addEventListener('click', ()=> openCategory(cat.id));
+        categorySection.appendChild(card);
+
+        // Subcategory panel
+        const sub = document.createElement('div');
+        sub.id = cat.id;
+        sub.className = 'subcategory-container';
+        sub.innerHTML = `<button class="back-btn" onclick="goBack()" data-key="back_btn">⬅ Back</button>
+                         <h2 data-key="${cat.id}">${cat.name}</h2>`;
+        const grid = document.createElement('div'); grid.className = 'subcategory-grid';
+
+        cat.products.forEach(p => {
+          const pDiv = document.createElement('div'); pDiv.className = 'subcategory-card';
+          const safeName = encodeURIComponent(p.name);
+          const safeImg = encodeURIComponent(p.img);
+          pDiv.innerHTML = `
+            <img src="${p.img}" alt="${p.name}">
+            <p>${p.name}</p>
+            <p class="price">₹${p.price}</p>
+            <div class="buy-cart-container">
+              <button class="buy-btn" onclick="onBuyNow(${p.price})" data-key="buy_now_btn">Buy Now</button>
+              <button class="cart-btn" onclick="onAddToCart('${safeName}', ${p.price}, '${safeImg}')" data-key="add_to_cart_btn">🛒 Add to Cart</button>
+            </div>`;
+          grid.appendChild(pDiv);
+        });
+
+        sub.appendChild(grid);
+        subcategorySection.appendChild(sub);
+      });
+
+      // Apply translation if Marathi
+      if (currentLanguage === 'mr') translatePage('mr');
+    }
+
+    function openCategory(id){
+      categorySection.style.display = 'none';
+      document.querySelectorAll('.subcategory-container').forEach(d=> d.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (currentLanguage === 'mr') translatePage('mr');
+    }
+
+    function goBack(){
+      document.querySelectorAll('.subcategory-container').forEach(d=> d.classList.remove('active'));
+      categorySection.style.display = 'grid';
+      if (currentLanguage === 'mr') translatePage('mr');
+    }
+
+    /***********************
+     * Cart functions
+     ***********************/
+    function updateCartDisplay() {
+      cartItemsEl.innerHTML = '';
+      let total = 0;
+      cart.forEach(item => {
+        total += item.price * item.quantity;
+        const encodedName = encodeURIComponent(item.name);
+        const itemDiv = document.createElement('div'); itemDiv.className = 'cart-item';
+        itemDiv.innerHTML = `
+          <div style="display:flex;align-items:center;gap:8px;flex:1;">
+            <img src="${item.img}" style="width:46px;height:46px;object-fit:contain;border-radius:6px;background:#fff;">
+            <div style="font-size:.95rem;">${item.name}<div style="color:#777;font-size:.85rem;">₹${item.price}</div></div>
+          </div>
+          <div class="cart-controls">
+            <button class="qty-btn" onclick="changeQuantity('${encodedName}', -1)">−</button>
+            <span style="min-width:18px;text-align:center;">${item.quantity}</span>
+            <button class="qty-btn" onclick="changeQuantity('${encodedName}', 1)">+</button>
+            <div style="min-width:70px;text-align:right;margin-left:6px;">₹${item.price*item.quantity}</div>
+            <button class="remove-btn" onclick="removeItem('${encodedName}')">✖</button>
+          </div>`;
+        cartItemsEl.appendChild(itemDiv);
+      });
+
+      cartCountEl.textContent = cart.reduce((s,i)=> s + i.quantity, 0);
+      cartTotalEl.textContent = total.toFixed(2).replace(/\.00$/, '');
+      saveCart();
+    }
+
+    function changeQuantity(nameEncoded, delta){
+      const name = decodeURIComponent(nameEncoded);
+      const it = cart.find(i=> i.name === name);
+      if (!it) return;
+      it.quantity += delta;
+      if (it.quantity <= 0) cart = cart.filter(i=> i.name !== name);
+      updateCartDisplay();
+    }
+
+    function removeItem(nameEncoded) {
+      const name = decodeURIComponent(nameEncoded);
+      cart = cart.filter(i => i.name !== name);
+      updateCartDisplay();
+    }
+
+    function toggleCart(){
+      const popup = document.getElementById('cart-popup');
+      const overlay = document.getElementById('overlay');
+
+      // Don't open cart if login modal is visible
+      if (document.getElementById('login-modal').style.display === 'block') return;
+
+      popup.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+
+    function onAddToCart(nameEnc, price, imgEnc) {
+      const name = decodeURIComponent(nameEnc);
+      const img = decodeURIComponent(imgEnc);
+
+      // If not logged in, save intended action and prompt login
+      if (!isLoggedIn()) {
+        // Save redirect to this page with hash + action data so user returns here after login
+        // We store an encoded JSON so the login page can redirect back to appropriate URL:
+        const action = encodeURIComponent(JSON.stringify({ type:'addToCart', payload:{ name, price, img } }));
+        localStorage.setItem('postLoginRedirect', window.location.pathname + '#' + action);
+        showLoginModal();
+        return;
+      }
+
+      const existing = cart.find(i=> i.name === name);
+      if (existing) existing.quantity++;
+      else cart.push({ name, price, quantity:1, img });
+
+      updateCartDisplay();
+
+      // Toast
+      const message = currentLanguage === 'mr' ? marathiTranslations.alert_add_to_cart.replace('{name}', name) : `✅ Added <strong>${name}</strong> to Cart!`;
+      showToast(`<img src="${img}" alt="${name}" style="width:30px;height:30px;object-fit:contain;background:#fff;border-radius:6px;"> <span>${message}</span>`);
+    }
+
+    function onBuyNow(price) {
+      // If not logged in, set redirect to payment page for this price
+      if (!isLoggedIn()) {
+        const finalUrl = `payment.html?total=${price}`;
+        localStorage.setItem('postLoginRedirect', finalUrl);
+        showLoginModal();
+        return;
+      }
+      window.location.href = `payment.html?total=${price}`;
+    }
+
+    function handleCheckout(){
+      const total = parseFloat(cartTotalEl.textContent || '0');
+      if (total === 0) {
+        alert(currentLanguage === 'mr' ? marathiTranslations.alert_empty_cart : 'Your cart is empty! Add items to proceed.');
+        return;
+      }
+      const finalUrl = `payment.html?total=${total}`;
+
+      if (!isLoggedIn()) {
+        // Save redirect to payment
+        localStorage.setItem('postLoginRedirect', finalUrl);
+        // close cart before showing modal for UX
+        toggleCart();
+        showLoginModal();
+        return;
+      }
+
+      // proceed to payment, clear cart for simplicity
+      localStorage.removeItem('cart');
+      cart = [];
+      updateCartDisplay();
+      toggleCart();
+      window.location.href = finalUrl;
+    }
+
+    /***********************
+     * Login modal & redirect helpers
+     ***********************/
+    function showLoginModal(){
+      const modal = document.getElementById('login-modal');
+      const overlay = document.getElementById('overlay');
+      // apply language text
+      if (currentLanguage === 'mr') {
+        modal.querySelector('h3').textContent = marathiTranslations.login_modal_title;
+        modal.querySelector('p').textContent = marathiTranslations.login_modal_message;
+        modal.querySelector('button').textContent = marathiTranslations.login_modal_btn;
+      } else {
+        modal.querySelector('h3').textContent = '🔒 Login Required!';
+        modal.querySelector('p').textContent = 'You must be logged in to proceed with your purchase.';
+        modal.querySelector('button').textContent = 'Go to Login Page';
+      }
+      modal.style.display = 'block';
+      overlay.classList.add('active');
+    }
+
+    function closeLoginModal(){
+      document.getElementById('login-modal').style.display = 'none';
+      document.getElementById('overlay').classList.remove('active');
+    }
+
+    function confirmLoginRedirect(){
+      // Keep the stored postLoginRedirect intact. Go to login page.
+      window.location.href = 'Login.html';
+    }
+
+    /***********************
+     * Post-login action executor
+     * (When page loads, detect hash stored in postLoginRedirect and act)
+     ***********************/
+    function processPostLoginActionIfAny(){
+      // If the user returned from login with a stored postLoginRedirect like '/Products.html#%7B...%7D'
+      // or payment page URL, login.html will redirect back to the URL stored in localStorage.
+      // But if login redirected back with a hash action, process it now:
+      const hash = window.location.hash;
+      if (!hash) return;
+
+      try {
+        const payload = decodeURIComponent(hash.substring(1)); // remove '#'
+        // payload is encoded JSON string (see onAddToCart)
+        const parsed = JSON.parse(payload);
+        if (parsed && parsed.type === 'addToCart' && parsed.payload) {
+          const { name, price, img } = parsed.payload;
+          // Add item to cart automatically for the logged-in user
+          const existing = cart.find(i=> i.name === name);
+          if (existing) existing.quantity++;
+          else cart.push({ name, price, quantity:1, img });
+          updateCartDisplay();
+          showToast(`✅ Added <strong>${name}</strong> to Cart!`);
+          // Clear the hash so it won't repeat on reload
+          history.replaceState(null, '', window.location.pathname);
+          localStorage.removeItem('postLoginRedirect');
+        }
+      } catch (err) {
+        // Not our action — ignore.
+      }
+    }
+
+    /***********************
+     * Logout
+     ***********************/
+    function logout(){
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('isLoggedIn');
+      showUserUI();
+      alert('You have been logged out.');
+      // Optionally redirect to login:
+      window.location.href = 'Product.html';
+    }
+
+    /***********************
+     * Initialization
+     ***********************/
+    document.addEventListener('DOMContentLoaded', function(){
+      buildUI();
+      updateCartDisplay();
+      showUserUI();
+
+      // If user is logged in and there's a postLoginRedirect that points back here with a hash action,
+      // the login page may have redirected to e.g. /Products.html#%7B...%7D
+      // Handle that now:
+      if (isLoggedIn()) processPostLoginActionIfAny();
+
+      // Add overlay click to close cart/modal:
+      document.getElementById('overlay').addEventListener('click', function(){
+        // Close cart
+        document.getElementById('cart-popup').classList.remove('active');
+        document.getElementById('overlay').classList.remove('active');
+        // Close login modal
+        document.getElementById('login-modal').style.display = 'none';
+      });
+    });
+  </script>
+</body>
+</html>  

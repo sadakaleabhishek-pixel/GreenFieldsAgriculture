@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Us - Green Fields Agriculture</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f0f8f5;
+      color: #2e7d32;
+    }
+    header {
+      background-color: #2e7d32;
+      padding: 1rem 2rem;
+      color: white;
+      position: relative;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+      margin: 0; padding: 0;
+      align-items: center;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+    /* Language Button Styling */
+    #lang-toggle-btn {
+      background-color: #dcedc8;
+      color: #1b5e20;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: background-color 0.3s;
+    }
+    #lang-toggle-btn:hover {
+      background-color: #c8e6c9;
+    }
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    form {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    button {
+      background: #2e7d32;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      margin-top: 1.5rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1b5e20;
+    }
+    footer {
+      background: #2e7d32;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 4rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="Home.html" data-key="nav_home">HOME</a></li>
+        <li><a href="Product.html" data-key="nav_products">PRODUCTS</a></li>
+        <li><a href="about.html" data-key="nav_about">ABOUT US</a></li>
+        <li><a href="contact.html" data-key="nav_contact">CONTACT US</a></li>
+        <li><button id="lang-toggle-btn" onclick="toggleLanguage()">मराठी</button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1 data-key="main_title">Contact Us</h1>
+
+    <form id="contactForm">
+      <label for="name" data-key="label_name">Name</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email" data-key="label_email">Email</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="subject" data-key="label_subject">Subject</label>
+      <input type="text" id="subject" name="subject" required>
+
+      <label for="message" data-key="label_message">Message</label>
+      <textarea id="message" name="message" required></textarea>
+
+      <button type="submit" data-key="btn_send">Send Message</button>
+    </form>
+  </main>
+
+  <footer>
+    <p data-key="footer_text">&copy; 2025 Green Fields Agriculture. All rights reserved.</p>
+  </footer>
+
+  <script>
+    let currentLanguage = 'en';
+    const marathiTranslations = {
+      nav_home: 'मुख्यपृष्ठ',
+      nav_products: 'उत्पादने',
+      nav_about: 'आमच्याबद्दल',
+      nav_contact: 'संपर्क',
+      main_title: 'संपर्क करा',
+      label_name: 'नाव',
+      label_email: 'ईमेल',
+      label_subject: 'विषय',
+      label_message: 'संदेश',
+      btn_send: 'संदेश पाठवा',
+      footer_text: '© २०२५ ग्रीन फील्ड्स ॲग्रिकल्चर. सर्व हक्क राखीव.'
+    };
+
+    function translatePage(lang) {
+      const elements = document.querySelectorAll('[data-key]');
+      const isMr = lang === 'mr';
+      elements.forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (isMr && marathiTranslations[key]) el.textContent = marathiTranslations[key];
+        else if (!isMr && el.originalText) el.textContent = el.originalText;
+        else if (!el.originalText) el.originalText = el.textContent;
+      });
+    }
+
+    function toggleLanguage() {
+      currentLanguage = currentLanguage === 'en' ? 'mr' : 'en';
+      document.getElementById('lang-toggle-btn').textContent = currentLanguage === 'en' ? 'मराठी' : 'English';
+      translatePage(currentLanguage);
+    }
+
+    document.getElementById('contactForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      alert(currentLanguage === 'mr' ? 'धन्यवाद! तुमचा संदेश पाठवला गेला आहे.' : 'Thank you! Your message has been sent.');
+      this.reset();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ग्रीन फील्ड्स एग्रीकल्चर - पिके</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#e8f5e9; color:#2e7d32; line-height:1.6; }
+
+/* Header */
+header { background:#388e3c; color:white; display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; position:sticky; top:0; z-index:100; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
+nav ul { list-style:none; display:flex; gap:1rem; align-items:center; width:100%; }
+
+/* Links & Buttons */
+nav ul li a, nav ul li button { text-decoration:none; color:white; font-weight:bold; cursor:pointer; transition:0.3s; }
+nav ul li a:hover, nav ul li button:hover { color:#c8e6c9; }
+
+/* Login/Logout */
+.login-status { margin-left:auto; }
+.login-status button, .login-status a {
+    background:#a5d6a7;
+    color:#2e7d32;
+    border:none;
+    padding:0.4rem 0.8rem;
+    border-radius:12px;
+    font-weight:bold;
+    cursor:pointer;
+    transition: 0.3s;
+    text-decoration:none;
+}
+.login-status button:hover, .login-status a:hover { background:#c8e6c9; color:#2e7d32; }
+.login-status b { margin-right:0.5rem; }
+
+/* Language Button */
+#translateBtn {
+    background: #ffeb3b;           /* Bright yellow */
+    color: #2e7d32;                 /* Dark green text */
+    border: 2px solid #2e7d32;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+#translateBtn:hover {
+    background: #cddc39;
+    color: #1b5e20;
+    transform: scale(1.05);
+}
+
+/* Hero */
+.hero { background:url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80') center/cover no-repeat; height:350px; border-radius:15px; margin:2rem auto; display:flex; align-items:center; justify-content:center; color:white; font-size:2rem; font-weight:bold; text-align:center; width:90%; max-width:1200px; box-shadow:inset 0 0 0 1000px rgba(46,125,50,0.5); }
+
+/* Heading */
+.season-heading { text-align:center; font-size:2rem; font-weight:bold; margin:2rem 0 1rem; }
+
+/* Season Buttons */
+.tabs { display:flex; justify-content:center; gap:1rem; margin:1rem auto; flex-wrap:wrap; width:90%; max-width:1200px; }
+.tab-button { background:#a5d6a7; border:none; padding:1rem; border-radius:15px; font-weight:bold; cursor:pointer; display:flex; flex-direction:column; align-items:center; min-width:150px; max-width:200px; transition: all 0.3s; box-shadow:0 5px 15px rgba(0,0,0,0.2); }
+.tab-button img { width:100%; height:120px; object-fit:cover; border-radius:12px; margin-bottom:0.5rem; }
+.tab-button span { font-size:1.1rem; }
+.tab-button small { font-size:0.8rem; color:white; margin-top:2px; }
+.tab-button.active, .tab-button:hover { background:#388e3c; color:white; transform:scale(1.05); }
+
+/* Tab content */
+.tab-content { display:none; padding:1rem; width:90%; max-width:1200px; margin:auto; transition: max-height 0.5s ease, opacity 0.5s ease; overflow:hidden; opacity:0; max-height:0; }
+.tab-content.active { display:block; opacity:1; max-height:2000px; }
+
+/* Crop Grid */
+.crop-grid { display:flex; gap:1rem; overflow-x:auto; padding:0.5rem 0; justify-content:center; scroll-behavior:smooth; margin-top:1rem; }
+.crop-card { min-width:200px; background:white; border-radius:15px; padding:1rem; box-shadow:0 6px 15px rgba(0,0,0,0.15); cursor:pointer; transition:transform 0.3s, box-shadow 0.3s; text-align:center; flex-shrink:0; margin:0 0.5rem; }
+.crop-card:hover { transform:translateY(-7px); box-shadow:0 10px 25px rgba(0,0,0,0.2); }
+.crop-card img { width:100%; height:150px; object-fit:cover; border-radius:12px; }
+.crop-card h3 { margin-top:0.5rem; font-size:1.1rem; }
+
+/* Crop Info */
+#cropInfo { background:white; padding:2rem; margin:2rem auto; max-width:800px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.15); display:none; line-height:1.6; }
+#cropInfo h2 { color:#2e7d32; margin-bottom:1rem; }
+
+/* Footer */
+footer { text-align:center; padding:1.5rem; background:#388e3c; color:white; margin-top:2rem; font-size:1rem; }
+
+/* Responsive */
+@media(max-width:768px) {
+    nav ul { flex-direction:column; align-items:center; gap:1rem; }
+    .hero { font-size:1.5rem; height:250px; }
+    .tab-button img { height:100px; }
+    .tab-button span { font-size:1rem; }
+    .tab-button small { font-size:0.7rem; }
+    .crop-card img { height:120px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+<nav>
+    <ul>
+        <li><a href="Home.html" data-en="HOME" data-mr="मुख्यपृष्ठ">HOME</a></li>
+        <li><a href="Product.html" data-en="PRODUCTS" data-mr="उत्पादने">PRODUCTS</a></li>
+        <li><a href="about.html" data-en="ABOUT US" data-mr="आमच्या बद्दल">ABOUT US</a></li>
+        <li><a href="contact.html" data-en="CONTACT US" data-mr="संपर्क">CONTACT US</a></li>
+        <li><button id="translateBtn">मराठी</button></li>
+        <li class="login-status" id="loginStatus"></li>
+    </ul>
+</nav>
+</header>
+
+<div class="hero" data-en="Welcome to Green Fields Agriculture<br>Grow Naturally, Grow Sustainably" 
+     data-mr="ग्रीन फील्ड्स एग्रीकल्चर मध्ये आपले स्वागत आहे">
+Welcome to Green Fields Agriculture
+</div>
+
+<h2 class="season-heading" data-en="Season wise crop information" data-mr="हंगामानुसार पिकांची माहिती">Season wise crop information</h2>
+
+<div class="tabs" id="seasonTabs"></div>
+<div id="tabContents"></div>
+<div id="cropInfo"></div>
+
+<footer data-en="&copy; 2025 Green Fields Agriculture. All rights reserved." data-mr="&copy; 2025 ग्रीन फील्ड्स एग्रीकल्चर. सर्व हक्क राखीव आहेत.">
+&copy; 2025 Green Fields Agriculture. All rights reserved.
+</footer>
+
+<script>
+// Language toggle
+let currentLang='en';
+let currentCrop='';
+
+// Seasons & Crops
+const seasons=[
+    {name:'Rabi', mr:'रबी', months:'Oct-Apr', monthsMr:'ऑक्टोबर - एप्रिल', img:'Rubi.jpg', crops:['Wheat','Barley','Gram','Mustard']},
+    {name:'Kharif', mr:'खरीप', months:'Jun-Nov', monthsMr:'जून - नोव्हेंबर', img:'Kharif.jpg', crops:['Rice','Maize','Cotton','Soybean']},
+    {name:'Zaid', mr:'झैद', months:'Feb-May', monthsMr:'फेब्रुवारी - मे', img:'https://images.unsplash.com/photo-1592928306681-3c7f25a1c892?auto=format&fit=crop&w=1200&q=80', crops:['Watermelon','Cucumber','Muskmelon','Pumpkin']}
+];
+
+const cropImages={
+Wheat:'https://upload.wikimedia.org/wikipedia/commons/6/60/Wheat_close-up.jpg',
+Barley:'https://upload.wikimedia.org/wikipedia/commons/d/d4/Barley_field.jpg',
+Gram:'https://upload.wikimedia.org/wikipedia/commons/4/44/Chickpeas_in_the_field.jpg',
+Mustard:'https://upload.wikimedia.org/wikipedia/commons/6/6d/Mustard_field_in_Bangladesh_%283%29.jpg',
+Rice:'https://upload.wikimedia.org/wikipedia/commons/6/6f/Rice_field_in_Indonesia.jpg',
+Maize:'https://upload.wikimedia.org/wikipedia/commons/a/a2/Maize_field.jpg',
+Cotton:'https://upload.wikimedia.org/wikipedia/commons/2/26/Cotton_field.jpg',
+Soybean:'https://upload.wikimedia.org/wikipedia/commons/3/3a/Soybean_field.jpg',
+Watermelon:'https://upload.wikimedia.org/wikipedia/commons/8/89/Watermelons.jpg',
+Cucumber:'https://upload.wikimedia.org/wikipedia/commons/8/89/Cucumber_field.jpg',
+Muskmelon:'https://upload.wikimedia.org/wikipedia/commons/0/04/Muskmelon.jpg',
+Pumpkin:'https://upload.wikimedia.org/wikipedia/commons/a/a9/Pumpkin_field.jpg'};
+
+const cropData={
+Wheat:{cost:20000,seed:60,fertilizer:35,yield:30,price:2000,soil:"Loamy",spacing:"20cm",irrigation:"Moderate",notes:"Good for rotation."},
+Barley:{cost:18000,seed:55,fertilizer:30,yield:25,price:1800,soil:"Loamy",spacing:"25cm",irrigation:"Low",notes:"Drought tolerant."},
+Gram:{cost:15000,seed:50,fertilizer:25,yield:20,price:1500,soil:"Loamy",spacing:"20cm",irrigation:"Moderate",notes:"Nitrogen fixing crop."},
+Mustard:{cost:16000,seed:45,fertilizer:20,yield:18,price:1700,soil:"Loamy",spacing:"15cm",irrigation:"Low",notes:"Oilseed crop."},
+Rice:{cost:25000,seed:90,fertilizer:60,yield:35,price:2000,soil:"Clayey",spacing:"25cm",irrigation:"High",notes:"Water-logged fields."},
+Maize:{cost:22000,seed:80,fertilizer:50,yield:28,price:1800,soil:"Loamy",spacing:"25cm",irrigation:"Moderate",notes:"Cereal crop."},
+Cotton:{cost:30000,seed:100,fertilizer:70,yield:40,price:3000,soil:"Loamy",spacing:"30cm",irrigation:"Moderate",notes:"Cash crop."},
+Soybean:{cost:20000,seed:70,fertilizer:45,yield:32,price:2500,soil:"Loamy",spacing:"25cm",irrigation:"Moderate",notes:"Oilseed crop."},
+Watermelon:{cost:18000,seed:40,fertilizer:25,yield:25,price:1200,soil:"Sandy loam",spacing:"50cm",irrigation:"High",notes:"Fruits crop."},
+Cucumber:{cost:15000,seed:35,fertilizer:20,yield:20,price:1000,soil:"Sandy loam",spacing:"50cm",irrigation:"High",notes:"Fruits crop."},
+Muskmelon:{cost:17000,seed:38,fertilizer:22,yield:18,price:1500,soil:"Sandy loam",spacing:"50cm",irrigation:"High",notes:"Fruits crop."},
+Pumpkin:{cost:16000,seed:36,fertilizer:20,yield:22,price:1200,soil:"Sandy loam",spacing:"50cm",irrigation:"High",notes:"Fruits crop."}
+};
+
+const labels={
+en:{area:"Area Cultivated",cost:"Cost",seed:"Seed Required",fertilizer:"Fertilizer Required",yield:"Yield",revenue:"Revenue",profit:"Profit",soil:"Soil Type",spacing:"Spacing",irrigation:"Irrigation",notes:"Notes"},
+mr:{area:"पिकवलेले क्षेत्र",cost:"खर्च",seed:"बियाणे आवश्यक",fertilizer:"खते आवश्यक",yield:"उत्पन्न",revenue:"उत्पन्न रक्कम",profit:"नफा",soil:"माती प्रकार",spacing:"मागणी अंतर",irrigation:"सिंचन",notes:"टीप"}};
+
+// Generate season tabs
+const seasonTabs=document.getElementById('seasonTabs'); 
+const tabContents=document.getElementById('tabContents');
+
+seasons.forEach((season,index)=>{
+    const btn=document.createElement('button'); 
+    btn.classList.add('tab-button'); 
+    btn.innerHTML=`<img src="${season.img}"><span data-en="${season.name}" data-mr="${season.mr}">${season.name}</span><small data-en="Months: ${season.months}" data-mr="महिने: ${season.monthsMr}">Months: ${season.months}</small>`;
+    btn.addEventListener('click',()=>openTab(index));
+    seasonTabs.appendChild(btn);
+
+    const content=document.createElement('div'); content.classList.add('tab-content'); content.id=`season${index}`;
+    const grid=document.createElement('div'); grid.classList.add('crop-grid'); grid.style.display='none';
+    season.crops.forEach(crop=>{
+        const card=document.createElement('div'); card.classList.add('crop-card');
+        card.innerHTML=`<img src="${cropImages[crop]}"><h3 data-en="${crop}" data-mr="${crop}">${crop}</h3>`;
+        card.addEventListener('click',()=>showCropInfo(crop));
+        grid.appendChild(card);
+    });
+    content.appendChild(grid); tabContents.appendChild(content);
+});
+
+function openTab(index){
+    document.querySelectorAll('.tab-content').forEach((c,i)=>{
+        if(i===index){ c.classList.add('active'); c.querySelector('.crop-grid').style.display='flex'; }
+        else { c.classList.remove('active'); c.querySelector('.crop-grid').style.display='none'; }
+    });
+    document.querySelectorAll('.tab-button').forEach((b,i)=>b.classList.toggle('active',i===index));
+}
+
+function showCropInfo(crop){
+    currentCrop=crop;
+    const acres=prompt(`Enter how many acres you cultivate ${crop}:`);
+    if(!acres || isNaN(acres)) return;
+    const data=cropData[crop]; 
+    const lbl=labels[currentLang];
+    const revenue=acres*data.price; 
+    const profit=revenue-data.cost;
+    const html=`<h2>${crop}</h2>
+        <p><b>${lbl.area}:</b> ${acres} acres</p>
+        <p><b>${lbl.cost}:</b> ₹${data.cost}</p>
+        <p><b>${lbl.seed}:</b> ${data.seed} kg/acre</p>
+        <p><b>${lbl.fertilizer}:</b> ${data.fertilizer} kg/acre</p>
+        <p><b>${lbl.yield}:</b> ${data.yield} quintals/acre</p>
+        <p><b>${lbl.revenue}:</b> ₹${revenue}</p>
+        <p><b>${lbl.profit}:</b> ₹${profit}</p>
+        <p><b>${lbl.soil}:</b> ${data.soil}</p>
+        <p><b>${lbl.spacing}:</b> ${data.spacing}</p>
+        <p><b>${lbl.irrigation}:</b> ${data.irrigation}</p>
+        <p><b>${lbl.notes}:</b> ${data.notes}</p>`;
+    document.getElementById('cropInfo').innerHTML=html;
+    document.getElementById('cropInfo').style.display='block';
+}
+
+// Language toggle button
+document.getElementById('translateBtn').addEventListener('click',()=>{
+    currentLang=currentLang==='en'?'mr':'en';
+    document.querySelectorAll('[data-en]').forEach(el=>el.innerHTML=currentLang==='en'?el.dataset.en:el.dataset.mr);
+    document.getElementById('translateBtn').innerText=currentLang==='en'?'मराठी':'English';
+    if(currentCrop) showCropInfo(currentCrop);
+});
+
+// Login/Logout
+function updateLoginStatus() {
+    const loginStatus = document.getElementById('loginStatus');
+    const currentUser = localStorage.getItem('currentUser');
+    const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+    if(loggedIn && currentUser){
+        loginStatus.innerHTML = `<b>${currentUser}</b> <button id="logout">Logout</button>`;
+        document.getElementById('logout').addEventListener('click', ()=>{
+            localStorage.removeItem('currentUser');
+            localStorage.setItem('isLoggedIn','false');
+            localStorage.setItem('postLoginRedirect','Home.html');
+            alert('Logged out successfully!');
+            updateLoginStatus();
+        });
+    } else {
+        loginStatus.innerHTML = `<a href="login.html" data-en="Login" data-mr="लॉगिन">Login</a>`;
+    }
+}
+
+window.addEventListener('load', updateLoginStatus);
+</script>
+
+</body>
+</html>

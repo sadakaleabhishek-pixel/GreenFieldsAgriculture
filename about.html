@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About Us - Green Fields Agriculture</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f0f8f5;
+      color: #2e7d32;
+    }
+    header {
+      background-color: #2e7d32;
+      padding: 1rem 2rem;
+      color: white;
+      position: relative;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+      margin: 0; padding: 0;
+      align-items: center;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+    /* Language toggle button */
+    #lang-toggle-btn {
+      background-color: white;
+      color: #2e7d32;
+      font-weight: bold;
+      border: 2px solid #2e7d32;
+      border-radius: 5px;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+    #lang-toggle-btn:hover {
+      background-color: #2e7d32;
+      color: white;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    section {
+      margin-bottom: 2rem;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #2e7d32;
+      margin-top: 0;
+    }
+    p, li {
+      line-height: 1.6;
+      font-size: 1rem;
+      color: #555;
+    }
+    footer {
+      background: #2e7d32;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 4rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="Home.html" data-key="nav_home">HOME</a></li>
+        <li><a href="Product.html" data-key="nav_products">PRODUCTS</a></li>
+        <li><a href="about.html" data-key="nav_about">ABOUT US</a></li>
+        <li><a href="contact.html" data-key="nav_contact">CONTACT US</a></li>
+        <li><button id="lang-toggle-btn" onclick="toggleLanguage()">मराठी</button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1 data-key="main_title">About Green Fields Agriculture</h1>
+
+    <section>
+      <h2 data-key="mission_title">Our Mission</h2>
+      <p data-key="mission_text">At Green Fields Agriculture, our mission is to promote sustainable farming practices that respect nature and benefit communities. We aim to provide farmers with eco-friendly solutions, organic seeds, and guidance to grow healthy, chemical-free crops.</p>
+    </section>
+
+    <section>
+      <h2 data-key="vision_title">Our Vision</h2>
+      <p data-key="vision_text">We envision a world where agriculture is in harmony with the environment, producing food that nourishes people while preserving soil fertility, water resources, and biodiversity. By supporting natural and organic farming methods, we strive to create a greener future.</p>
+    </section>
+
+    <section>
+      <h2 data-key="approach_title">Our Approach</h2>
+      <p data-key="approach_text">We provide farmers with practical knowledge on:</p>
+      <ul>
+        <li data-key="approach1">Natural Farming – using local resources and zero chemicals.</li>
+        <li data-key="approach2">Organic Farming – producing safe, high-quality crops.</li>
+        <li data-key="approach3">Eco-friendly Products – fertilizers, compost, and equipment that enhance soil health.</li>
+        <li data-key="approach4">Crop Management – proper sowing, irrigation, pest, and disease control naturally.</li>
+      </ul>
+      <p data-key="approach_text2">Our team of experts works closely with farmers to implement these methods effectively, ensuring sustainability and profitability.</p>
+    </section>
+
+    <section>
+      <h2 data-key="why_title">Why Choose Us?</h2>
+      <p data-key="why_text">We combine traditional wisdom with modern organic practices. By choosing Green Fields Agriculture, farmers gain:</p>
+      <ul>
+        <li data-key="why1">Access to certified organic seeds and eco-friendly inputs.</li>
+        <li data-key="why2">Practical training and support for natural farming methods.</li>
+        <li data-key="why3">Knowledge on sustainable water, nutrient, and pest management.</li>
+        <li data-key="why4">Guidance to improve crop yield while maintaining soil health.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p data-key="footer_text">&copy; 2025 Green Fields Agriculture. All rights reserved.</p>
+  </footer>
+
+  <script>
+    let currentLanguage = 'en';
+    const marathiTranslations = {
+      nav_home: 'मुख्यपृष्ठ',
+      nav_products: 'उत्पादने',
+      nav_about: 'आमच्याबद्दल',
+      nav_contact: 'संपर्क',
+      main_title: 'ग्रीन फील्ड्स ॲग्रिकल्चर विषयी',
+      mission_title: 'आमचे उद्दिष्ट',
+      mission_text: 'ग्रीन फील्ड्स ॲग्रिकल्चर मध्ये आमचे उद्दिष्ट म्हणजे शाश्वत शेती पद्धतीला प्रोत्साहन देणे, ज्या निसर्गाचा आदर करतात आणि समाजासाठी लाभदायक आहेत. आम्ही शेतकऱ्यांना पर्यावरणपूरक उपाय, सेंद्रिय बियाणे आणि रासायनिक मुक्त निरोगी पिके वाढवण्यासाठी मार्गदर्शन देतो.',
+      vision_title: 'आमचे दृष्टिकोन',
+      vision_text: 'आम्ही अशी दुनिया पाहतो जिथे शेती पर्यावरणाशी सुसंगत आहे, लोकांना पोषण देणारा अन्न तयार करते, मातीची सुपीकता, जलस्रोत आणि जैवविविधता टिकवते. नैसर्गिक आणि सेंद्रिय शेती पद्धतीला समर्थन देऊन, आम्ही हिरव्या भविष्याची निर्मिती करतो.',
+      approach_title: 'आमचा दृष्टिकोन',
+      approach_text: 'आम्ही शेतकऱ्यांना व्यावहारिक ज्ञान पुरवतो:',
+      approach1: 'नैसर्गिक शेती – स्थानिक संसाधने वापरून आणि रसायनाशिवाय.',
+      approach2: 'सेंद्रिय शेती – सुरक्षित, उच्च-गुणवत्तेची पिके उत्पादन.',
+      approach3: 'पर्यावरणपूरक उत्पादने – खत, कंपोस्ट, आणि उपकरणे जी मातीच्या आरोग्यास सुधारतात.',
+      approach4: 'पिक व्यवस्थापन – योग्य पेरणी, सिंचन, कीटक आणि रोग नियंत्रण नैसर्गिक पद्धतीने.',
+      approach_text2: 'आमच्या तज्ज्ञांची टीम शेतकऱ्यांसोबत जवळून काम करते, ही पद्धती प्रभावीपणे अंमलात आणण्यासाठी, शाश्वतता आणि नफ्याची खात्री करून.',
+      why_title: 'आम्हाला का निवडावे?',
+      why_text: 'आम्ही पारंपारिक ज्ञान आणि आधुनिक सेंद्रिय पद्धती एकत्र करतो. ग्रीन फील्ड्स ॲग्रिकल्चर निवडल्याने शेतकऱ्यांना मिळते:',
+      why1: 'सर्टिफाइड सेंद्रिय बियाणे आणि पर्यावरणपूरक इनपुट्स मिळवणे.',
+      why2: 'नैसर्गिक शेती पद्धतीसाठी व्यावहारिक प्रशिक्षण आणि समर्थन.',
+      why3: 'शाश्वत जल, पोषण, आणि कीटक व्यवस्थापनाबाबत ज्ञान.',
+      why4: 'मातीच्या आरोग्यास टिकवून पिक उत्पन्न सुधारण्यासाठी मार्गदर्शन.',
+      footer_text: '© २०२५ ग्रीन फील्ड्स ॲग्रिकल्चर. सर्व हक्क राखीव.'
+    };
+
+    function translatePage(lang) {
+      const elements = document.querySelectorAll('[data-key]');
+      const isMr = lang === 'mr';
+      elements.forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (isMr && marathiTranslations[key]) el.textContent = marathiTranslations[key];
+        else if (!isMr && el.originalText) el.textContent = el.originalText;
+        else if (!el.originalText) el.originalText = el.textContent;
+      });
+    }
+
+    function toggleLanguage() {
+      currentLanguage = currentLanguage === 'en' ? 'mr' : 'en';
+      document.getElementById('lang-toggle-btn').textContent = currentLanguage === 'en' ? 'मराठी' : 'English';
+      translatePage(currentLanguage);
+    }
+  </script>
+</body>
+</html>

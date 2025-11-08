@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout & Payment - Green Fields Agriculture</title>
+    <style>
+        /* Base Styling */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f1f8e9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .payment-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            position: relative; /* Needed for lang button positioning */
+        }
+        h1 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2e7d32;
+            padding-bottom: 10px;
+        }
+        
+        /* Language Button */
+        #lang-toggle-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            z-index: 10;
+        }
+        #lang-toggle-btn:hover {
+            background-color: #388e3c;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .order-summary p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1b5e20;
+            margin: 5px 0;
+        }
+
+        /* Payment Option Selector Styling */
+        .payment-options-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .payment-option-label {
+            display: block;
+            background-color: #e8f5e9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            border: 2px solid #e8f5e9;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        .payment-option-label:hover {
+            background-color: #dcedc8;
+        }
+        .payment-option-label input[type="radio"] {
+            margin-right: 10px;
+            accent-color: #2e7d32;
+            transform: scale(1.2);
+        }
+        
+        /* Active Payment Method Highlight */
+        .payment-option-label input[type="radio"]:checked + span {
+            color: #1b5e20;
+        }
+        .payment-option-label.selected {
+            border: 2px solid #2e7d32;
+            background-color: #c8e6c9;
+        }
+
+        /* Payment Form & Input Styling */
+        .payment-form-details {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .payment-form-details > div {
+            display: none; /* Hide all sub-forms initially */
+        }
+        .payment-form-details > div.active {
+            display: block; /* Show only the active sub-form */
+        }
+
+        .payment-form label {
+            display: block;
+            text-align: left;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .payment-form input, .payment-form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .expiry-cvv-group {
+            display: flex; 
+            gap: 10px;
+        }
+        .expiry-cvv-group > div {
+            flex: 1;
+        }
+
+        /* Button & Link Styling */
+        .pay-btn {
+            background: #2e7d32;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .pay-btn:hover {
+            background: #1b5e20;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #2e7d32;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        
+        <button id="lang-toggle-btn" onclick="toggleLanguage()">मराठी / English</button>
+
+        <h1 data-key="main_title">Complete Your Payment</h1>
+        
+        <div class="order-summary">
+            <p data-key="amount_payable_label">Amount Payable:</p>
+            <p>₹<span id="total-amount">0.00</span></p>
+        </div>
+
+        <form class="payment-form" onsubmit="return handlePayment(event)">
+            <h2 data-key="select_method_title">Select Method</h2>
+            <div class="payment-options-group">
+                
+                <label class="payment-option-label selected">
+                    <input type="radio" name="payment-method" value="card" checked onchange="showPaymentForm('card')">
+                    <span data-key="card_label">Credit / Debit Card</span>
+                </label>
+
+                <label class="payment-option-label">
+                    <input type="radio" name="payment-method" value="upi" onchange="showPaymentForm('upi')">
+                    <span data-key="upi_label">UPI (Google Pay, PhonePe, Paytm)</span>
+                </label>
+
+                <label class="payment-option-label">
+                    <input type="radio" name="payment-method" value="netbanking" onchange="showPaymentForm('netbanking')">
+                    <span data-key="netbanking_label">Net Banking</span>
+                </label>
+
+                <label class="payment-option-label">
+                    <input type="radio" name="payment-method" value="cod" onchange="showPaymentForm('cod')">
+                    <span data-key="cod_label">Cash on Delivery (COD)</span>
+                </label>
+            </div>
+
+            <div class="payment-form-details">
+                
+                <div id="card-form" class="active">
+                    <label for="card-holder" data-key="card_holder_label">Card Holder Name</label>
+                    <input type="text" id="card-holder" required>
+
+                    <label for="card-number" data-key="card_number_label">Card Number</label>
+                    <input type="text" id="card-number" pattern="\d{16}" title="Must be 16 digits" required>
+
+                    <div class="expiry-cvv-group">
+                        <div>
+                            <label for="expiry" data-key="expiry_label">Expiry Date (MM/YY)</label>
+                            <input type="text" id="expiry" pattern="(0[1-9]|1[0-2])\/\d{2}" title="Must be MM/YY" required>
+                        </div>
+                        <div>
+                            <label for="cvv" data-key="cvv_label">CVV</label>
+                            <input type="text" id="cvv" pattern="\d{3,4}" title="Must be 3 or 4 digits" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="upi-form">
+                    <label for="upi-id" data-key="upi_id_label">Enter UPI ID</label>
+                    <input type="text" id="upi-id" placeholder="e.g., yourname@bankname" required>
+                    <p style="font-size: 0.9em; color: #555; margin-top: -10px;" data-key="upi_note">You will receive a payment request on your UPI app.</p>
+                </div>
+
+                <div id="netbanking-form">
+                    <label for="bank-select" data-key="bank_select_label">Select Your Bank</label>
+                    <select id="bank-select" required>
+                        <option value="" data-key="select_bank_option">-- Select Bank --</option>
+                        <option value="sbi" data-key="sbi_bank">State Bank of India</option>
+                        <option value="hdfc" data-key="hdfc_bank">HDFC Bank</option>
+                        <option value="icici" data-key="icici_bank">ICICI Bank</option>
+                        <option value="axis" data-key="axis_bank">Axis Bank</option>
+                        <option value="other" data-key="other_banks">Other Banks...</option>
+                    </select>
+                </div>
+                
+                <div id="cod-form">
+                    <p style="color: #c0392b; font-weight: bold;">
+                        <span id="cod-warning" data-key="cod_fee_warning">COD fee of ₹50.00 applies.</span>
+                    </p>
+                    <p data-key="cod_note">Please ensure you have the exact cash amount ready at the time of delivery.</p>
+                </div>
+            </div>
+            <button type="submit" class="pay-btn">
+                <span id="pay-button-text">Pay ₹0.00 Now</span>
+            </button>
+        </form>
+
+        <a href="Product.html" class="back-link" data-key="back_link_text">← Continue Shopping</a>
+    </div>
+
+    <script>
+        const COD_FEE = 50.00; // Mock COD fee
+        let currentLanguage = 'en';
+
+        // --- MARATHI TRANSLATIONS ---
+        const marathiTranslations = {
+            main_title: 'तुमचे पेमेंट पूर्ण करा',
+            amount_payable_label: 'देय रक्कम:',
+            select_method_title: 'पद्धत निवडा',
+            card_label: 'क्रेडिट / डेबिट कार्ड',
+            upi_label: 'यूपीआय (गुगल पे, फोनपे, पेटीएम)',
+            netbanking_label: 'नेट बँकिंग',
+            cod_label: 'कॅश ऑन डिलिव्हरी (COD)',
+            card_holder_label: 'कार्डधारकाचे नाव',
+            card_number_label: 'कार्ड क्रमांक',
+            expiry_label: 'समाप्ती तारीख (MM/YY)',
+            cvv_label: 'CVV',
+            upi_id_label: 'यूपीआय आयडी टाका',
+            upi_note: 'तुम्हाला तुमच्या UPI ॲपवर पेमेंटची विनंती प्राप्त होईल.',
+            bank_select_label: 'तुमची बँक निवडा',
+            select_bank_option: '-- बँक निवडा --',
+            sbi_bank: 'स्टेट बँक ऑफ इंडिया',
+            hdfc_bank: 'एचडीएफसी बँक',
+            icici_bank: 'आयसीआयसीआय बँक',
+            axis_bank: 'ॲक्सिस बँक',
+            other_banks: 'इतर बँका...',
+            cod_fee_warning: 'सीओडी शुल्क ₹50.00 लागू आहे.',
+            cod_note: 'कृपया डिलिव्हरीच्या वेळी अचूक रोख रक्कम तयार ठेवा.',
+            back_link_text: '← खरेदी सुरू ठेवा',
+            pay_button_text_pay: 'आता ₹{amount} भरा',
+            pay_button_text_confirm: 'सीओडी ऑर्डर निश्चित करा',
+            alert_fill_details: 'कृपया आवश्यक तपशील योग्यरित्या भरा.',
+            alert_cod_success: '✅ ऑर्डर निश्चित (COD). तुमची अंतिम रक्कम ₹{amount} आहे. डिलिव्हरीच्या वेळी पैसे द्या.',
+            alert_payment_success: '✅ {amount} चे पेमेंट {method} द्वारे यशस्वी झाले! ऑर्डरसाठी धन्यवाद.',
+        };
+
+        // --- UTILITY FUNCTIONS ---
+
+        function getTranslation(key) {
+            return marathiTranslations[key];
+        }
+
+        function translatePage(lang) {
+            const elements = document.querySelectorAll('[data-key]');
+            
+            elements.forEach(element => {
+                const key = element.getAttribute('data-key');
+                const translation = getTranslation(key);
+
+                if (lang === 'mr' && translation) {
+                    element.textContent = translation;
+                } else if (lang === 'en' && element.originalText) {
+                    element.textContent = element.originalText;
+                }
+            });
+
+            // Update button text after general translation
+            updatePayButtonText(document.querySelector('input[name="payment-method"]:checked').value);
+        }
+
+        function saveOriginalText() {
+            // Save the English text before the first translation
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(element => {
+                if (!element.originalText) {
+                    element.originalText = element.textContent;
+                }
+            });
+        }
+
+        function toggleLanguage() {
+            saveOriginalText(); // Ensure original English text is saved
+
+            if (currentLanguage === 'en') {
+                currentLanguage = 'mr';
+                translatePage('mr');
+                document.getElementById('lang-toggle-btn').textContent = 'English / मराठी';
+            } else {
+                currentLanguage = 'en';
+                translatePage('en');
+                document.getElementById('lang-toggle-btn').textContent = 'मराठी / English';
+            }
+        }
+
+        // --- PAYMENT LOGIC ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            let total = params.get('total');
+            
+            if (total) {
+                total = parseFloat(total);
+                document.getElementById('total-amount').textContent = total.toFixed(2);
+            } else {
+                // Mock value if parameter is missing
+                total = 1500.00; 
+                document.getElementById('total-amount').textContent = total.toFixed(2);
+            }
+            
+            saveOriginalText(); // Save English text on load
+            updatePayButtonText('card'); 
+            showPaymentForm('card');
+        });
+
+        function updatePayButtonText(method) {
+            const baseTotalText = document.getElementById('total-amount').textContent.replace(/[^0-9.]/g, '');
+            let baseTotal = parseFloat(baseTotalText) || 0;
+            let finalTotal = baseTotal;
+
+            // Adjust final total for COD (for display in the button only)
+            if (method === 'cod') {
+                // Note: We don't adjust the total-amount span here, 
+                // but we adjust the button text and ensure the warning is visible.
+                finalTotal = baseTotal + COD_FEE;
+                document.getElementById('cod-warning').style.display = 'block';
+            } else {
+                document.getElementById('cod-warning').style.display = 'none';
+            }
+            
+            const buttonTextElement = document.getElementById('pay-button-text');
+            const amount = finalTotal.toFixed(2);
+
+            if (method === 'cod') {
+                buttonTextElement.textContent = (currentLanguage === 'mr') 
+                    ? getTranslation('pay_button_text_confirm')
+                    : 'Confirm COD Order';
+            } else {
+                 const baseText = (currentLanguage === 'mr') 
+                    ? getTranslation('pay_button_text_pay').replace('{amount}', amount)
+                    : `Pay ₹${amount} Now`;
+                buttonTextElement.textContent = baseText;
+            }
+        }
+
+        function showPaymentForm(method) {
+            const forms = document.querySelectorAll('.payment-form-details > div');
+            const labels = document.querySelectorAll('.payment-option-label');
+
+            forms.forEach(form => form.classList.remove('active'));
+            labels.forEach(label => label.classList.remove('selected'));
+
+            const selectedForm = document.getElementById(method + '-form');
+            if (selectedForm) selectedForm.classList.add('active');
+            
+            const selectedRadio = document.querySelector(`input[value="${method}"]`);
+            if (selectedRadio) selectedRadio.closest('.payment-option-label').classList.add('selected');
+
+            updatePayButtonText(method);
+        }
+
+        function handlePayment(event) {
+            event.preventDefault(); 
+            
+            const selectedMethod = document.querySelector('input[name="payment-method"]:checked').value;
+            let baseTotal = parseFloat(document.getElementById('total-amount').textContent.replace(/[^0-9.]/g, '')) || 0;
+            let finalTotal = (selectedMethod === 'cod' ? baseTotal + COD_FEE : baseTotal);
+            const finalAmount = finalTotal.toFixed(2);
+            
+            let isFormValid = true;
+            // Simple validation check for active form
+            const activeForm = document.getElementById(selectedMethod + '-form');
+            if (activeForm) {
+                const inputs = activeForm.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    if (!input.checkValidity()) isFormValid = false;
+                });
+            }
+
+            if (!isFormValid) {
+                alert(currentLanguage === 'mr' ? getTranslation('alert_fill_details') : "Please fill in the required details correctly.");
+                return false;
+            }
+            
+            // --- MOCK PAYMENT SUCCESS ---
+            if (selectedMethod === 'cod') {
+                const codAlert = (currentLanguage === 'mr') 
+                    ? getTranslation('alert_cod_success').replace('{amount}', finalAmount)
+                    : `✅ Order Confirmed (COD). Your final amount is ₹${finalAmount}. Pay at delivery.`;
+                alert(codAlert);
+            } else {
+                const methodLabel = document.querySelector(`input[value="${selectedMethod}"] + span`).textContent;
+                const payAlert = (currentLanguage === 'mr')
+                    ? getTranslation('alert_payment_success').replace('{amount}', finalAmount).replace('{method}', getTranslation(selectedMethod + '_label'))
+                    : `✅ Payment of ₹${finalAmount} via ${methodLabel} successful! Thank you for your order.`;
+                alert(payAlert);
+            }
+            
+            // Redirect to home page after "successful" payment
+            window.location.href = "Home.html";
+            return false;
+        }
+    </script>
+</body>
+</html>

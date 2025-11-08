@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register - Green Fields Agriculture</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e9f5ea;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+    .register-container {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+    h2 {
+      color: #2e7d32;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      background-color: #2e7d32;
+      color: white;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #276a26;
+    }
+    .message {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
+    }
+    .link {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .link a {
+      color: #2e7d32;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <h2>Create an Account</h2>
+    <div id="msg" class="message"></div>
+    <form id="registerForm" onsubmit="return handleRegister(event)">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required autocomplete="off" />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required minlength="6" />
+
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6" />
+
+      <button type="submit">Register</button>
+    </form>
+    <div class="link">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+  </div>
+
+  <script>
+    function handleRegister(event) {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const msg = document.getElementById('msg');
+
+      if (password !== confirmPassword) {
+        msg.textContent = "Passwords do not match.";
+        msg.className = "message error";
+        return false;
+      }
+
+      if (localStorage.getItem('users')) {
+        var users = JSON.parse(localStorage.getItem('users'));
+      } else {
+        var users = {};
+      }
+
+      if (users[username]) {
+        msg.textContent = "Username already exists. Try a different one.";
+        msg.className = "message error";
+        return false;
+      }
+
+      users[username] = password;
+      localStorage.setItem('users', JSON.stringify(users));
+
+      msg.textContent = "Registration successful! Redirecting to login...";
+      msg.className = "message success";
+
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 2000);
+
+      return false;
+    }
+  </script>
+</body>
+</html>
